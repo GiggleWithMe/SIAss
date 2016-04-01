@@ -1,0 +1,87 @@
+---
+title: "Central Limit Theorem and the Exponential Distribution"
+author: "Kai Wakerman Powell"
+date: "1 April 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+The following explores the exponential distribution and the central limit theorem. It tests how close the simulated variables sit to the theoretical variables. The blow shows that the variables are extremely close. The mean, standard deviation, and variance all sit very closely with the theoretical values. Interestingly, when run with a larged simulated sample, the values decreased across the board. When comparing the distribution of samples, it is clear that they follow an approximate normal distribution.
+
+## Setup
+
+These are some standard setup to assist reproducibility.
+
+```{r}
+library(ggplot2)
+setwd("~/Desktop/Coursera/SI/SIAss")
+set.seed(1234567890)
+```
+
+## First run:
+
+This sets up the simulation and runs for 1000 simulations as expressed in the assignment instructions:
+
+```{r}
+nsims<-1000
+exps<-40
+lambda<-.2
+sims<-matrix(rexp(nsims*exps,lambda),nsims)
+simmeans<-data.frame(apply(sims,1,mean))
+simmeansplot<-qplot(simmeans,geom="histogram")
+simmeansplot
+```
+
+## Second run:
+
+Given that the last plot can sometimes look a bit thin, a version with 10000 runs is run below:
+
+```{r}
+nsims2<-10000
+sims2<-matrix(rexp(nsims2*exps,lambda),nsims2)
+simmeans2<-data.frame(apply(sims2,1,mean))
+simmeansplot2<-qplot(simmeans2,geom="histogram")
+simmeansplot2
+```
+
+## Comparing sample means against theoretical means
+
+The theoretical mean = 1/lambda and the theoretical standard deviation = 1/lambda.
+```{r}
+tmean<-1/lambda
+tsd<-((1/lambda)*(1/sqrt(exps)))
+tvar<-tsd^2
+```
+
+As for the sampled means and standard variations:
+```{r}
+mean1000<-mean(simmeans$apply.sims..1..mean.)
+mean10000<-mean(simmeans2$apply.sims2..1..mean.)
+sd1000<-sd(simmeans$apply.sims..1..mean.)
+sd10000<-sd(simmeans2$apply.sims2..1..mean.)
+var1000<-sd1000^2
+var10000<-sd10000^2
+```
+
+To compare the theoretical means and standard deviations against the sample means and standard deviations:
+
+Variable          |Theoretical value|1000 simulations|10000 simulations
+------------------|-----------------|----------------|-----------------
+Mean              |`r tmean`        |`r mean1000`    |`r mean10000`    
+Standard Deviation|`r tsd`          |`r sd1000`      |`r sd10000`      
+Variance          |`r tvar`         |`r var1000`     |`r var10000`
+
+This shows that the sample mean, standard deviation and variances are very close.
+
+## Distribution
+
+The following overlays the normal distribution, and the sampled distributions for the 1000 and 10000 simulated runs. It appears that the simulated distributions are approximately normal.
+
+```{r}
+
+```
