@@ -2,7 +2,7 @@
 title: "Central Limit Theorem and the Exponential Distribution"
 author: "Kai Wakerman Powell"
 date: "1 April 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -33,6 +33,7 @@ exps<-40
 lambda<-.2
 sims<-matrix(rexp(nsims*exps,lambda),nsims)
 simmeans<-data.frame(apply(sims,1,mean))
+names(simmeans)<-"Simmeans"
 simmeansplot<-qplot(simmeans,geom="histogram")
 simmeansplot
 ```
@@ -45,6 +46,7 @@ Given that the last plot can sometimes look a bit thin, a version with 10000 run
 nsims2<-10000
 sims2<-matrix(rexp(nsims2*exps,lambda),nsims2)
 simmeans2<-data.frame(apply(sims2,1,mean))
+names(simmeans2)<-"Simmeans2"
 simmeansplot2<-qplot(simmeans2,geom="histogram")
 simmeansplot2
 ```
@@ -80,8 +82,17 @@ This shows that the sample mean, standard deviation and variances are very close
 
 ## Distribution
 
-The following overlays the normal distribution, and the sampled distributions for the 1000 and 10000 simulated runs. It appears that the simulated distributions are approximately normal.
+The following overlays the normal distribution, and the sampled distributions for the 1000 and 10000 simulated runs. Looking at the 1000 run simulations it appears that the simulated distributions are approximately normal:
 
 ```{r}
+normplot<-ggplot(simmeans,aes(x=Simmeans))+geom_histogram(binwidth = lambda,color="black",aes(y = ..density..))
+normplot<-normplot+stat_function(fun=dnorm,args=list(mean=tmean,sd=tsd),color="red",size=1.0)
+normplot
+```
 
+When run at 10000 runs, the same is confirmed. However it appears more clear here that there might be some bias in the estimator:
+```{r}
+normplot2<-ggplot(simmeans2,aes(x=Simmeans2))+geom_histogram(binwidth = lambda,color="black",aes(y = ..density..))
+normplot2<-normplot2+stat_function(fun=dnorm,args=list(mean=tmean,sd=tsd),color="red",size=1.0)
+normplot2
 ```

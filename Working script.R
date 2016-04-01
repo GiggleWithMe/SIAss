@@ -19,13 +19,15 @@ lambda<-.2
 
 sims<-matrix(rexp(nsims*exps,lambda),nsims)
 simmeans<-data.frame(apply(sims,1,mean))
+names(simmeans)<-"Simmeans"
 simmeansplot<-qplot(simmeans,geom="histogram")
 simmeansplot
 
 nsims2<-10000
 
-sims2<-matrix(rexp(nsims2*exps2,lambda2),nsims2)
+sims2<-matrix(rexp(nsims2*exps,lambda),nsims2)
 simmeans2<-data.frame(apply(sims2,1,mean))
+names(simmeans2)<-"Simmeans2"
 simmeansplot2<-qplot(simmeans2,geom="histogram")
 simmeansplot2
 
@@ -36,4 +38,14 @@ sd10000<-sd(simmeans2$apply.sims2..1..mean.)
 var1000<-sd1000^2
 var10000<-sd10000^2
 
-normplot<-
+tmean<-1/lambda
+tsd<-((1/lambda)*(1/sqrt(exps)))
+tvar<-tsd^2
+
+normplot<-ggplot(simmeans,aes(x=Simmeans))+geom_histogram(binwidth = lambda,color="black",aes(y = ..density..))
+normplot<-normplot+stat_function(fun=dnorm,args=list(mean=tmean,sd=tsd),color="red",size=1.0)
+normplot
+normplot2<-ggplot(simmeans2,aes(x=Simmeans2))+geom_histogram(binwidth = lambda,color="black",aes(y = ..density..))
+normplot2<-normplot2+stat_function(fun=dnorm,args=list(mean=tmean,sd=tsd),color="red",size=1.0)
+normplot2
+
