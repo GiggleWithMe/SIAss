@@ -1,0 +1,84 @@
+---
+title: "Tooth Growth and Supplements"
+author: "Kai Wakerman Powell"
+date: "1 April 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Summary
+
+The following is a very basic exploration of two supplements, orange juice and vitamin C, on tooth growth. Basic exploration of the data and plotting of the results make it clear that one type of supplement, orange juice, seems to have more impact on too growth length. Hypothesis testing of this against a Null Hypothesis that there is no difference confirm this to be true.
+
+However further similar testing, while taking into account the dose levels of each of these supplements only confirm the advantage of orange juice for the 0.5 and 1 levels. It appears that the two supplements converge in the sample space (0.5-2.0). Further work probably involves regressions, which are not covered in the Statistical Inference course.
+
+## Setup
+
+Basic setup and details for reproducibility.
+
+```{r}
+setwd("~/Desktop/Coursera/SI/SIAss")
+library(ggplot2)
+library(datasets)
+set.seed(0987654321)
+data("ToothGrowth")
+```
+
+## Basic exploration
+
+this shows some basic exploration of the data.
+```{r}
+str(ToothGrowth)
+head(ToothGrowth)
+summary(ToothGrowth)
+table(ToothGrowth$dose,ToothGrowth$supp)
+```
+
+However it is much clearer to plot the data than to read summaries.
+```{r}
+plot <- ggplot(ToothGrowth,aes(dose,len,shape=supp,color=supp))+geom_point()+scale_color_manual(values=c("green","red"))+theme(legend.position=c(.2,1),legend.justification=c(1,1))
+plot
+```
+
+## Basic comparison
+
+The plot appears to suggest there is a difference between orange juice (labelled OJ) and vitamin C (labelled VC). First step is to compare the raw sample means:
+```{r}
+OJTooth<-ToothGrowth$len[ToothGrowth$supp=="OJ"]
+VCTooth<-ToothGrowth$len[ToothGrowth$supp=="VC"]
+
+meanvc<-mean(VCTooth)
+meanvc
+meanoj<-mean(OJTooth)
+meanoj
+meanoj-meanvc
+```
+
+To confirm this, we can run a hypothesis test of OJ is greater than VC against a Null Hypothesis of no difference:
+```{r}
+t.test(OJTooth,VCTooth,alt="greater")
+```
+
+This confirms that OJ has a greater impact on tooth growth length (assuming, oddly enough, that tooth growth length was measured after as a result of the supplements, not the other way around).
+
+## Dose-wise comparisons
+
+However the two supplements only cover one of the two causal variables. We also want to examine whether the advantage of OJ over VC is maintained over varying dose levels:
+
+```{r}
+oj05<-ToothGrowth$len[ToothGrowth$supp=="OJ"&ToothGrowth$dose==0.5]
+oj10<-ToothGrowth$len[ToothGrowth$supp=="OJ"&ToothGrowth$dose==1]
+oj20<-ToothGrowth$len[ToothGrowth$supp=="OJ"&ToothGrowth$dose==2]
+vc05<-ToothGrowth$len[ToothGrowth$supp=="VC"&ToothGrowth$dose==0.5]
+vc10<-ToothGrowth$len[ToothGrowth$supp=="VC"&ToothGrowth$dose==1]
+vc20<-ToothGrowth$len[ToothGrowth$supp=="VC"&ToothGrowth$dose==2]
+
+t.test(oj05,vc05,alt="greater")
+t.test(oj10,vc10,alt="greater")
+t.test(oj20,vc20,alt="greater")
+```
+
+This shows that we can reject the Null Hypothesis for 0.5 and 1 dose levels, and that OJ appears to have an advantage at these levels. However we cannot reject the Null Hypothesis for a dose level of 2. This suggests that the two supplements converge on the upper dose levels within the sample space.
