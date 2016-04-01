@@ -82,3 +82,12 @@ t.test(oj20,vc20,alt="greater")
 ```
 
 This shows that we can reject the Null Hypothesis for 0.5 and 1 dose levels, and that OJ appears to have an advantage at these levels. However we cannot reject the Null Hypothesis for a dose level of 2. This suggests that the two supplements converge on the upper dose levels within the sample space.
+
+## Assumptions
+
+1. Samples are representative of the popultation
+2. Data is unpaired
+3. Variances are the same
+4. Distributions are roughly normal/t
+
+(to save space I didn't investigate all these)
